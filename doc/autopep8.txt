@@ -1,0 +1,81 @@
+*autoflake.txt*   
+
+Author: tell-k  (ffk2005 AT gmail DOT com)
+For Vim version 7 and above
+Last change: 2014 Mar 2
+
+1. Overview         |autoflake-overview|
+2. Required         |autoflake-required|
+3. Installation     |autoflake-installation|
+4. Usage            |autoflake-usage|
+5. Customization    |autoflake-customization|
+6. License          |autoflake-license|
+
+==============================================================================
+1. Overview                                                *autoflake-overview*
+
+vim-autoflake is a Vim plugin that applies autoflake to your current file.
+autoflake remove unused imports and unused variables as reported by pyflakes. 
+
+==============================================================================
+2. Required                                                *autoflake-required*
+
+autoflake
+>
+    https://pypi.python.org/pypi/autoflake
+<
+
+==============================================================================
+3. Installation                                        *autoflake-installation*
+
+Simply put the contents of this repository in your ~/.vim/bundle directory.
+
+==============================================================================
+4. Usage                                                      *autoflake-usage*
+
+shortcut
+
+1. Open Python file.
+2. Press <F9> to run autoflake8 on it
+
+call function
+>
+ :Autoflake
+<
+
+==============================================================================
+5. Customization                                      *autoflake-customization*
+
+If you don't want to use the `<F9>` key for autoflake, simply remap it to
+another key.  It autodetects whether it has been remapped and won't register
+the `<F9>` key if so.  For example, to remap it to `<F3>` instead, use:
+>
+ autocmd FileType python map <buffer> <F3> :call Autoflake()<CR>
+<
+
+To allow autoflake to remove additional unused imports 
+(other than than those from the standard library),
+use the autoflake_imports option.  It accepts a comma-separated list of names
+>
+ let g:autoflake_imports="django,requests,urllib3"
+<
+
+Remove all unused imports (whether or not they are from the standard library).
+>
+ let g:autoflake_remove_all_unused_imports=1
+<
+
+Remove unused variables, 
+>
+ let g:autoflake_remove_unused_variables=1
+<
+
+Disable show diff window
+>
+ let g:autoflake_disable_show_diff=1
+<
+
+==============================================================================
+6. license                                                  *autoflake-license*
+
+MIT license
