@@ -1,8 +1,8 @@
 "=========================================================
 " File:        python_autoflake.vim
 " Author:      tell-k <ffk2005[at]gmail.com>
-" Last Change: 02-Mar-2014.
-" Version:     1.0.0
+" Last Change: 20-Sep-2014.
+" Version:     1.0.1
 " WebPage:     https://github.com/tell-k/vim-autoflake
 " License:     MIT Licence
 "==========================================================
@@ -17,67 +17,67 @@ let b:loaded_autoflake_ftplugin=1
 if !exists("*Autoflake()")
     function Autoflake()
         if exists("g:autoflake_cmd")
-            let s:autoflake_cmd=g:autoflake_cmd
+            let autoflake_cmd=g:autoflake_cmd
         else
-            let s:autoflake_cmd="autoflake"
+            let autoflake_cmd="autoflake"
         endif
 
-        if !executable(s:autoflake_cmd)
-            echoerr "File " . s:autoflake_cmd . " not found. Please install it first."
+        if !executable(autoflake_cmd)
+            echoerr "File " . autoflake_cmd . " not found. Please install it first."
             return
         endif
 
         if exists("g:autoflake_imports")
-            let s:autoflake_imports=" --imports=".g:autoflake_imports
+            let autoflake_imports=" --imports=".g:autoflake_imports
         else
-            let s:autoflake_imports=""
+            let autoflake_imports=""
         endif
 
         if exists("g:autoflake_remove_all_unused_imports")
-            let s:autoflake_remove_all_unused_imports=" --remove-all-unused-imports"
+            let autoflake_remove_all_unused_imports=" --remove-all-unused-imports"
         else
-            let s:autoflake_remove_all_unused_imports=""
+            let autoflake_remove_all_unused_imports=""
         endif
 
         if exists("g:autoflake_remove_unused_variables")
-            let s:autoflake_remove_unused_variables=" --remove-unused-variables"
+            let autoflake_remove_unused_variables=" --remove-unused-variables"
         else
-            let s:autoflake_remove_unused_variables=""
-        endif
+            let autoflake_remove_unused_variables=""
+        endi
 
-        let s:execmdline=s:autoflake_cmd.s:autoflake_imports.s:autoflake_remove_all_unused_imports.s:autoflake_remove_unused_variables
-        let s:tmpfile = tempname()
-        let s:tmpdiff = tempname()
-        let s:index = 0
+        let execmdline=autoflake_cmd.autoflake_imports.autoflake_remove_all_unused_imports.autoflake_remove_unused_variables
+        let tmpfile = tempname()
+        let tmpdiff = tempname()
+        let index = 0
         try
             " current cursor
-            let s:current_cursor = getpos(".")
+            let current_cursor = getpos(".")
 
             " write to temporary file
-            silent execute "!cat \"" . expand('%:p') . "\" > " . s:tmpfile
-            silent execute "!". s:execmdline . " --in-place " . s:tmpfile
+            silent execute "!cat \"" . expand('%:p') . "\" > " . tmpfile
+            silent execute "!". execmdline . " --in-place " . tmpfile
             if !exists("g:autoflake_disable_show_diff")
-                silent execute "!". s:execmdline . " \"" . expand('%:p') . "\" > " . s:tmpdiff
+                silent execute "!". execmdline . " \"" . expand('%:p') . "\" > " . tmpdiff
             endif
 
             " current buffer all delete
             silent execute "%d"
             " read temp file. and write to current buffer.
-            for line in readfile(s:tmpfile)
-                call append(s:index, line)
-                let s:index = s:index + 1
+            for line in readfile(tmpfile)
+                call append(index, line)
+                let index = index + 1
             endfor
 
             " remove last linebreak.
-            silent execute ":" . s:index . "," . s:index . "s/\\n$//g"
+            silent execute ":" . index . "," . index . "s/\\n$//g"
             " restore cursor
-            call setpos('.', s:current_cursor)
+            call setpos('.', current_cursor)
 
             " show diff
             if !exists("g:autoflake_disable_show_diff")
              botright new autoflake
              setlocal buftype=nofile bufhidden=wipe nobuflisted noswapfile nowrap
-             silent execute '$read ' . s:tmpdiff
+             silent execute '$read ' . tmpdiff
              setlocal nomodifiable
              setlocal nu
              setlocal filetype=diff
@@ -90,11 +90,11 @@ if !exists("*Autoflake()")
 
         finally
             " file close
-            if filewritable(s:tmpfile)
-                call delete(s:tmpfile)
+            if filewritable(tmpfile)
+                call delete(tmpfile)
             endif
-            if filewritable(s:tmpdiff)
-                call delete(s:tmpdiff)
+            if filewritable(tmpdiff)
+                call delete(tmpdiff)
             endif
         endtry
 
